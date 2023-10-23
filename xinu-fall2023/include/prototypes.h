@@ -51,6 +51,9 @@ extern	uint32	dnslookup(char *);
 /* in file dot2ip.c */
 extern	uint32	dot2ip(char *, uint32 *);
 
+/* in file enqueuesnd.c */
+extern int32 enqueuesnd(pid32 preceiver, pid32 psender, umsg32 pmessage);
+
 /* in file ethinit.c */
 extern 	int32	ethinit(struct dentry *);
 
