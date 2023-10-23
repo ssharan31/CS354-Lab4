@@ -24,12 +24,18 @@ syscall	sendb(
 
 	/* Check for existing message by checking if the reciever's  message buffer is full*/
 	if (prptr->prhasmsg) {
-		// TODO: Block the sender
-		restore(mask);
-		return SYSERR;
+		// The reciever's buffer is full so we block the sender
+		if (enqueuesndb(pid, currpid, msg) == -1) {
+            restore(mask);
+            return SYSERR;  // enqueuesndb failed
+        }
+		proctab[currpid].prstate = PR_SNDB;  // Set the sender's state to blocked
+        resched();  // Reschedule the processes
+		//restore(mask);
+		//return SYSERR;
 	}
 	/* If the buffer is not full or once it becomes empty, send the message*/
-	prptr->prmsg = msg;		/* Deliver message		*/
+	prptr->prmsg = msg;   /* Deliver message		*/
 	prptr->prhasmsg = TRUE;		/* Indicate message is waiting	*/
 
 	/* Unblock reciever if waiting*/
